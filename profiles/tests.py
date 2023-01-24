@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from .models import Profile
 from .views import profiles_index, profile
 
+
 class ProfileViewTestCase(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
@@ -13,18 +14,18 @@ class ProfileViewTestCase(TestCase):
         self.profile2 = Profile.objects.create(user=self.user2)
 
     def test_profiles_index(self):
-        url = reverse("profiles:index")
+        url = reverse("index")
         request = self.factory.get(url)
         response = profiles_index(request)
         self.assertEqual(response.status_code, 200)
-        self.assertIn(self.profile1, response.context["profiles_list"])
-        self.assertIn(self.profile2, response.context["profiles_list"])
-        self.assertIn("<title>", str(response.content))
+        self.assertIn(self.profile1.__str__(), response.content.decode())
+        self.assertIn(self.profile2.__str__(), response.content.decode())
+        self.assertIn("<title>", response.content.decode())
 
     def test_profile(self):
         url = reverse("profiles:profile", args=["testuser1"])
         request = self.factory.get(url)
         response = profile(request, username="testuser1")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["profile"], self.profile1)
+        self.assertIn(self.profile1.user.username, str(response.content))
         self.assertIn("<title>", str(response.content))

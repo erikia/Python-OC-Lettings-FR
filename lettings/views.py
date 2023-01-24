@@ -10,9 +10,8 @@ from .models import Letting
 
 def lettings_index(request):
     lettings_list = Letting.objects.all()
-    context = {"lettings_list": lettings_list}
-    return render(request, "index.html", context)
-
+    context = {'lettings_list': lettings_list}
+    return render(request, 'lettings/index.html', context)
 
 # Cras ultricies dignissim purus, vitae hendrerit ex varius non.
 # In accumsan porta nisl id eleifend. Praesent dignissim, odio eu consequat pretium,
@@ -28,9 +27,9 @@ def lettings_index(request):
 
 
 def letting(request, letting_id):
-    letting = Letting.objects.get(id=letting_id)
+    letting_request = Letting.objects.get(id=letting_id)
     context = {
-        "title": letting.title,
-        "address": letting.address,
+        'title': letting_request.title,
+        'address': letting_request.address,
     }
-    return render(request, "letting.html", context)
+    return render(request, 'lettings/letting.html', context)

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Profile
+from profiles.models import Profile
 
 
 # Sed placerat quam in pulvinar commodo. Nullam laoreet consectetur ex,
@@ -9,8 +9,8 @@ from .models import Profile
 
 def profiles_index(request):
     profiles_list = Profile.objects.all()
-    context = {"profiles_list": profiles_list}
-    return render(request, "profiles_index.html", context)
+    context = {'profiles_list': profiles_list}
+    return render(request, 'profiles/index.html', context)
 
 
 # Aliquam sed metus eget nisi tincidunt ornare accumsan eget lac
@@ -20,6 +20,6 @@ def profiles_index(request):
 
 
 def profile(request, username):
-    profile = Profile.objects.get(user__username=username)
-    context = {"profile": profile}
-    return render(request, "profile.html", context)
+    profile_request = Profile.objects.get(user__username=username)
+    context = {'profile': profile_request}
+    return render(request, 'profiles/profile.html', context)
