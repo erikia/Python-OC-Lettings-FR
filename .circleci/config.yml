@@ -1,0 +1,67 @@
+version: 2.1
+
+orbs:
+  docker: circleci/docker@2.2.0
+  heroku: circleci/heroku@2.0.0
+
+# Define jobs we want to run
+jobs:
+  build_and_test:
+    docker:
+      - image: cimg/python:3.10.2
+    steps:
+      - checkout
+      - run:
+          name: Configure environment
+          command: |
+            python -m venv .venv
+      - run:
+          name: Upgrade pip
+          command: |
+            . .venv/bin/activate
+            pip install --upgrade pip
+      - run:
+          name: Install dependencies
+          command: |
+            . .venv/bin/activate
+            pip install -r requirements.txt
+      - run:
+          name: Check linting
+          command: |
+            . .venv/bin/activate
+            flake8
+      - run:
+          name: Run tests
+          command: |
+            . .venv/bin/activate
+            pytest
+
+workflows:
+  complete_deploy:
+    jobs:
+      - build_and_test
+      - docker/publish:
+          extra_build_args: '--build-arg DJANGO_SECRET_KEY=$SECRET_KEY --build-arg SENTRY_DSN=$SENTRY_DSN'
+          image: $DOCKER_LOGIN/python-oc-lettings
+          tag: '$CIRCLE_SHA1,latest'
+          requires:
+            - build_and_test
+          filters:
+            branches:
+              only: master
+      - heroku/deploy-via-git:
+          post-deploy:
+            - run:
+                name: Delete contenttypes
+                command: |
+                  heroku run -a $HEROKU_APP_NAME python manage.py shell -c "from django.contrib.contenttypes.models import ContentType; ContentType.objects.all().delete()"
+            - run:
+                name: Load data.json
+                command: |
+                  heroku run -a $HEROKU_APP_NAME python manage.py loaddata data.json
+          requires:
+            - build_and_test
+            - docker/publish
+          filters:
+            branches:
+              only: master
