@@ -1,5 +1,10 @@
 FROM python:3.10-slim-buster
 
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV DEBUG 0
+
 # Set the working directory in the container to /app
 WORKDIR /app
 
@@ -12,6 +17,9 @@ RUN pip install -r requirements.txt
 # Copy the rest of the application code to the container
 COPY . .
 
+# Collect static files
+RUN python manage.py collectstatic --noinput
+
 # Start the server
-CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD gunicorn oc_lettings_site.wsgi:application --bind 0.0.0.0:$PORT
 
