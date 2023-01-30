@@ -30,6 +30,7 @@ jobs:
       - run:
           name: Build and push Docker image
           command: |
+            echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
             docker buildx build --platform linux/amd64 -t oc-lettings-26 .
             docker tag oc-lettings-26 registry.heroku.com/oc-lettings-26/web
             docker push registry.heroku.com/oc-lettings-26/web
@@ -44,6 +45,7 @@ jobs:
           command: |
             sudo curl https://cli-assets.heroku.com/install.sh | sh
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
+            docker login --username=_ --password=$(heroku auth:token) registry.heroku.com
             heroku container:release web -a oc-lettings-26
 
 
