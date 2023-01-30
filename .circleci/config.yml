@@ -1,18 +1,15 @@
 version: 2.1
 
-
 orbs:
   python: circleci/python@1.5.0
-
 
 jobs:
   tests:
     docker:
-  - image: cimg/python:3.10.2
+      - image: cimg/python:3.10.2
     auth:
       username: $DOCKERHUB_USERNAME
       password: $DOCKERHUB_PASSWORD
-
     
     steps:
       - checkout
