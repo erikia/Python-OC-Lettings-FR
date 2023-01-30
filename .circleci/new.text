@@ -28,22 +28,26 @@ jobs:
       - checkout
       - setup_remote_docker
       - run:
-          name: Build Docker image
+          name: Build and push Docker image
           command: |
-            export TAG=$(echo $CIRCLE_SHA1 | cut -c -7)
-            docker build -t "$TAG" -t web:latest .
+            echo ${DOCKER_PASSWORD} | docker login --username ${DOCKER_USERNAME} --password-stdin
+            docker buildx build --platform linux/amd64 -t oc-lettings-26 .
+            docker tag oc-lettings-26 registry.heroku.com/oc-lettings-26/web
+            docker push registry.heroku.com/oc-lettings-26/web
+
             
   heroku-deploy:
     machine: true
     steps:
       - checkout
       - run:
-          name: Build and push Docker image to Heroku
+          name: Release Docker image to Heroku
           command: |
             sudo curl https://cli-assets.heroku.com/install.sh | sh
             HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:login
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:push -a oc-lettings-26 web
-            HEROKU_API_KEY=${HEROKU_TOKEN} heroku container:release -a oc-lettings-26 web
+            docker login --username=_ --password=$(heroku auth:token) registry.heroku.com
+            heroku container:release web -a oc-lettings-26
+
 
 workflows:
   test-and-deploy:
