@@ -9,7 +9,10 @@ jobs:
   tests:
     docker:
       - image: cimg/python:3.10.2
-
+      auth:
+      username: $DOCKER_USERNAME
+      password: $DOCKER_PASSWORD
+    
     steps:
       - checkout
       - python/install-packages:
