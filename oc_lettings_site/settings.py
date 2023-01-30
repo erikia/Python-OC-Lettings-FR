@@ -113,7 +113,7 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static_files")
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # sentry_sdk.init(
 #     dsn="https://a918a928e7f74bafacf25e0d0ece36be@o4504561947967488.ingest.sentry.io/4504561969332224",
