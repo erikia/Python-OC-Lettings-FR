@@ -31,7 +31,7 @@ jobs:
           name: Build Docker image
           command: |
             echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-            docker build -t "$DOCKER_USERNAME"/oc_lettings:"$CIRCLE_SHA1" .
+            docker build -t "$DOCKER_USERNAME"/oc_lettings:"$CIRCLE_SHA1" --platform linux/x86_64 .
             docker push "$DOCKER_USERNAME"/oc_lettings:"$CIRCLE_SHA1"
             
   heroku-deploy:
