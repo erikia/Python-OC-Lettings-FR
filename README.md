@@ -15,7 +15,7 @@ Site web d'Orange County Lettings
 ## Quick Access
 
 1. [Informations](#informations)
-2. [Développement local](#developpement-local)
+2. [Développement local](#développement-local)
 3. [Déploiement](#déploiement)
 
 ## Informations
@@ -110,13 +110,13 @@ Effectuer une conteneurisation via docker
 Déployer sur Heroku
 Pour se connecter à Heroku, utilisez les commandes suivantes :
 
-$ heroku login
-$ heroku container:login
-$ heroku create <NOMDUPROJET:oc-lettings-26>
+- `heroku login`
+- `heroku container:login`
+- `heroku create <NOMDUPROJET:oc-lettings-26>`
 
-Les variables d'environnement peuvent être déclarées dans un fichier .env pour l'exécution locale ou sur les plateformes CircleCI ou Heroku pour un déploiement en ligne. Pour obtenir le HEROKU_TOKEN, tapez la commande suivante :
+Les variables d'environnement peuvent être déclarées dans un fichier .env pour l'exécution locale ou sur les plateformes CircleCI ou Heroku pour un déploiement en ligne. Pour obtenir le `HEROKU_TOKEN`, tapez la commande suivante :
 
-$ heroku authorizations:create
+- `heroku authorizations:create`
 
 Variables dans CircleCI:
 | CircleCI variable | Description                                                                                      |
@@ -139,15 +139,13 @@ heroku-deploy : utilisées pour se connecter à Heroku et déployer le conteneur
 
 Pour déployer une image Docker avec l'intégration continue il suffit de faire un push pour que Circle CI fasse l'image, il faut la relier à son compte Docker et lancer la commande suivante :
 
-$ docker run -p 8000:8000 $DOCKER_USERNAME/oc_lettings:$CIRCLE_SHA1
+- `docker run -d --name django-heroku -e "PORT=8000" -e "DEBUG=1" -p 8000:8000 $DOCKER_USERNAME/oc_lettings:$CIRCLE_SHA1`
 
 On peut également la construire manuellement avec cette commande : 
 
-$ docker build -t $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1
+- `docker build -t $DOCKER_USERNAME/oc-lettings:$CIRCLE_SHA1`
 
-Vous pourrez ensuite afficher votre site en local
-
-http://localhost:8000/
+Aller sur le site en local:  `http://localhost:8000/`
 
 Lien du pipeline actuel:
 
